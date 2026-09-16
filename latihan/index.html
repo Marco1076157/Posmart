@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kasir</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f1f5f9;
+            color: #000000;
+            margin: 0;
+            padding: 20px;
+        }
+        main {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 20px;
+        }
+        .panel {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            border-bottom: 2px solid #1e40af;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        input[type="text"]:focus {
+            outline: 2px solid #1e40af;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #1e40af;
+            color: #ffffff;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+        button:hover {
+            background-color: #1e3a8a;
+        }
+        .summary-box {
+            background-color: #f8fafc;
+            border: 1px dashed #cbd5e1;
+            padding: 12px;
+            border-radius: 6px;
+            margin-bottom: 15px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            font-size: 0.95rem;
+            border-bottom: 2px dashed #cbd5e1;
+        }
+        .grand-total {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1e40af;
+            border-top: 2px dashed #1e40af;
+            padding-top: 10px;
+            margin-top: 10px;
+        }
+        .barcode {
+            background-color: #f1f5f9;
+            border-left: 4px solid #1e40af;
+            padding: 12px;
+            margin-top: 15px;
+            border-radius: 0 6px 6px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center; margin-top: 20px; color: #0000FF;">Kasir POS</h1>
+    <main>
+        <div class="panel">
+            <h2>Scan Barcode Produk</h2>
+            <form id="cashier-form">
+                <div class="form-group">
+                    <input type="text" id="input-barcode" placeholder="Scan atau masukkan barcode atau input disini...." autofocus autocomplete="off" />
+                    <button id="btn-add" type="submit">Tambah (+)</button>
+                </div>
+            </form>
+            <h2>Daftar Belanja</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Barcode</th>
+                        <th>Produk</th>
+                        <th>Jumlah</th>
+                        <th>Harga</th>
+                        <th>Total</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="cart-table-body"></tbody>
+            </table>
+        </div>
+
+        <div class="panel">
+            <h2>Ringkasan Transaksi</h2>
+            <div class="summary-box">
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <strong id="invoice-num">-</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Total Item:</span>
+                    <strong id="total-items-count">0</strong>
+                </div>
+                <div class="summary-row">
+                    <span>Total Bayar:</span>
+                    <strong id="total-amount">Rp 0</strong>
+                </div>
+            </div>
+            <button id="btn-new">Transaksi Baru</button>
+            <div class="barcode">
+                <strong>Barcode:</strong>
+                <ul>
+                    <li><code>891234</code> - Indomie Bangladesh</li>
+                    <li><code>895678</code> - Mie Sedap</li>
+                    <li><code>899012</code> - Beras 1kg</li>
+                    <li><code>893456</code> - Minyak Goreng 1L</li>
+                    <li><code>897890</code> - Gula 1kg</li>
+                    <li><code>894567</code> - Teh Celup 25pcs</li>
+                    <li><code>890123</code> - Coca Cola</li>
+                </ul>
+            </div>
+        </div>
+    </main>
+    <script src="app.js"></script>
+</body>
+</html>

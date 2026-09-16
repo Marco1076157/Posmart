@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Interaksi & Pemutar Video</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px 0;
+        }
+        .card {
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 380px;
+        }
+        h3 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .auth-section {
+            margin-bottom: 20px;
+        }
+        input[type="text"], input[type="password"] {
+            width: 85%;
+            padding: 8px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .btn-auth {
+            background-color: #007bff;
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 92%;
+        }
+        .btn-auth:hover {
+            background-color: #0056b3;
+        }
+        
+        /* Gaya untuk Container Video */
+        .video-container {
+            margin-bottom: 15px;
+            background: #000;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        video {
+            width: 100%;
+            max-height: 220px;
+            background: #000;
+            transition: width 0.3s ease, height 0.3s ease;
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+        button {
+            padding: 10px 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+            transition: background 0.2s;
+        }
+        button:disabled {
+            background-color: #cccccc !important;
+            cursor: not-allowed;
+        }
+        .btn-like {
+            background-color: #28a745;
+            flex: 1;
+        }
+        .btn-like:hover:not(:disabled) {
+            background-color: #218838;
+        }
+        .btn-share {
+            background-color: #17a2b8;
+            flex: 1;
+        }
+        .btn-share:hover:not(:disabled) {
+            background-color: #138496;
+        }
+        .btn-dislike {
+            background-color: #dc3545;
+            flex: 1;
+        }
+        .btn-dislike:hover:not(:disabled) {
+            background-color: #c82333;
+        }
+        .btn-sub {
+            width: 100%;
+            background-color: #ff0000;
+            margin-bottom: 15px;
+        }
+        .btn-sub.subscribed {
+            background-color: #6c757d;
+        }
+        .btn-sub:hover:not(:disabled) {
+            opacity: 0.9;
+        }
+        .comment-section {
+            text-align: left;
+            margin-top: 15px;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+        }
+        .comment-section textarea {
+            width: 100%;
+            height: 60px;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: vertical;
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+        }
+        .btn-comment {
+            background-color: #6f42c1;
+            width: 100%;
+            margin-top: 5px;
+        }
+        .btn-comment:hover:not(:disabled) {
+            background-color: #5a32a3;
+        }
+        .comment-list {
+            margin-top: 10px;
+            max-height: 120px;
+            overflow-y: auto;
+            font-size: 12px;
+            text-align: left;
+        }
+        .comment-item {
+            background: #f8f9fa;
+            padding: 6px 8px;
+            border-radius: 4px;
+            margin-bottom: 5px;
+            border-left: 3px solid #6f42c1;
+        }
+        .comment-user {
+            font-weight: bold;
+            color: #333;
+        }
+        .count {
+            display: block;
+            margin-top: 3px;
+            font-size: 14px;
+            color: #555;
+        }
+        .user-status {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 15px;
+        }
+        .hint {
+            font-size: 11px;
+            color: #888;
+            margin-top: -5px;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h3>Panel Interaksi Pengguna</h3>
+        
+        <!-- Bagian Login dengan Password -->
+        <div id="auth-container" class="auth-section">
+            <p class="user-status">Silakan masuk dengan akun Anda untuk berinteraksi.</p>
+            <input type="text" id="username-input" placeholder="Nama Pengguna...">
+            <input type="password" id="password-input" placeholder="Password...">
+            <div class="hint">*(Demo: Bebas isi nama & password)</div>
+            <button class="btn-auth" onclick="handleLogin()">Masuk</button>
+        </div>
+
+        <!-- Bagian Utama Interaksi (Setelah Login) -->
+        <div id="voting-container" style="display: none;">
+            <p id="welcome-message" style="font-size: 13px; color: #007bff; font-weight: bold; margin-bottom: 10px;"></p>
+            
+            <!-- Pemutar Video (Ditempatkan di atas tombol Subscribe) -->
+            <div>
+               <iframe
+                    width="100%"
+                    height="220"
+                    src="https://www.youtube.com/embed/JcALYkho0lA"
+                    title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen>
+                </iframe>
+            </div>
+            <div style="margin-bottom: 15px; display: flex; gap: 5px; justify-content: center; flex-wrap: wrap;">
+                <button onclick="togglePlayPause()" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Play/Pause</button>
+                <button onclick="replayVideo()" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Replay</button>
+                <button onclick="changeVolume(0.1)" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Vol +</button>
+                <button onclick="changeVolume(-0.1)" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Vol -</button>
+                <button onclick="resizeVideo('small')" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Kecilkan</button>
+                <button onclick="resizeVideo('large')" style="background-color: #343a40; font-size: 11px; padding: 5px 8px;">Besarkan</button>
+            </div>
+
+            <!-- Tombol Subscribe / Unsubscribe -->
+            <button id="btn-subscribe" class="btn-sub" onclick="handleSubscribe()" disabled>🔔 Subscribe</button>
+            
+            <!-- Tombol Like, Share, Dislike (Share di tengah) -->
+            <div class="button-group">
+                <div>
+                    <button id="btn-like" class="btn-like" onclick="handleLike()" disabled>👍 Suka</button>
+                    <span id="like-count" class="count">0</span>
+                </div>
+                <div>
+                    <button id="btn-share" class="btn-share" onclick="handleShare()" disabled>↗️ Share</button>
+                    <span id="share-count" class="count">0</span>
+                </div>
+                <div>
+                    <button id="btn-dislike" class="btn-dislike" onclick="handleDislike()" disabled>👎 Tidak</button>
+                    <span id="dislike-count" class="count">0</span>
+                </div>
+            </div>
+
+            <!-- Kotak Komentar -->
+            <div class="comment-section">
+                <label style="font-size: 12px; font-weight: bold; color: #333;">Tulis Komentar:</label>
+                <textarea id="comment-input" placeholder="Bagikan pendapat objektif Anda..." disabled></textarea>
+                <button id="btn-comment" class="btn-comment" onclick="handlePostComment()" disabled>Kirim Komentar</button>
+                
+                <div id="comment-list" class="comment-list">
+                    <!-- Daftar komentar akan muncul di sini -->
+                </div>
+            </div>
+            
+            <button onclick="handleLogout()" style="background-color: #495057; font-size: 12px; padding: 5px 10px; width: auto; margin-top: 15px;">Keluar Akun</button>
+        </div>
+    </div>
+
+    <script>
+        let likes = 0;
+        let shares = 0;
+        let dislikes = 0;
+        let isLoggedIn = false;
+        let isSubscribed = false;
+        let currentUser = "";
+
+        // Fungsi Kontrol Video
+        const video = document.getElementById();
+
+        function togglePlayPause() {
+            if (video.paused) {
+                video.play();
+            } else {
+                video.pause();
+            }
+        }
+
+        function replayVideo() {
+            video.currentTime = 0;
+            video.play();
+        }
+
+        function changeVolume(amount) {
+            let newVol = video.volume + amount;
+            if (newVol > 1) newVol = 1;
+            if (newVol < 0) newVol = 0;
+            video.volume = newVol;
+        }
+
+        function resizeVideo(size) {
+            if (size === 'small') {
+                video.style.maxHeight = '150px';
+            } else if (size === 'large') {
+                video.style.maxHeight = '300px';
+            }
+        }
+
+        // Fungsi Masuk (Login)
+        function handleLogin() {
+            const usernameVal = document.getElementById('username-input').value.trim();
+            const passwordVal = document.getElementById('password-input').value.trim();
+
+            if (usernameVal === "" || passwordVal === "") {
+                alert("Nama dan Password wajib diisi!");
+                return;
+            }
+
+            currentUser = usernameVal;
+            isLoggedIn = true;
+
+            // Alihkan tampilan ke menu interaksi
+            document.getElementById('auth-container').style.display = 'none';
+            document.getElementById('voting-container').style.display = 'block';
+            document.getElementById('welcome-message').innerText = `Selamat Datang, ${currentUser}!`;
+
+            // Aktifkan semua tombol dan input
+            document.getElementById('btn-like').disabled = false;
+            document.getElementById('btn-share').disabled = false;
+            document.getElementById('btn-dislike').disabled = false;
+            document.getElementById('btn-subscribe').disabled = false;
+            document.getElementById('comment-input').disabled = false;
+            document.getElementById('btn-comment').disabled = false;
+        }
+
+        // Fungsi Keluar (Logout)
+        function handleLogout() {
+            isLoggedIn = false;
+            currentUser = "";
+            video.pause();
+            document.getElementById('username-input').value = "";
+            document.getElementById('password-input').value = "";
+            document.getElementById('comment-input').value = "";
+
+            // Reset status subscribe
+            isSubscribed = false;
+            const subBtn = document.getElementById('btn-subscribe');
+            subBtn.innerText = "🔔 Subscribe";
+            subBtn.classList.remove('subscribed');
+
+            // Tampilkan kembali form login
+            document.getElementById('auth-container').style.display = 'block';
+            document.getElementById('voting-container').style.display = 'none';
+
+            // Nonaktifkan semua tombol dan input kembali
+            document.getElementById('btn-like').disabled = true;
+            document.getElementById('btn-share').disabled = true;
+            document.getElementById('btn-dislike').disabled = true;
+            document.getElementById('btn-subscribe').disabled = true;
+            document.getElementById('comment-input').disabled = true;
+            document.getElementById('btn-comment').disabled = true;
+        }
+
+        // Fungsi Toggle Subscribe / Unsubscribe
+        function handleSubscribe() {
+            if (!isLoggedIn) return;
+            
+            isSubscribed = !isSubscribed;
+            const subBtn = document.getElementById('btn-subscribe');
+
+            if (isSubscribed) {
+                subBtn.innerText = "🔕 Unsubscribe";
+                subBtn.classList.add('subscribed');
+            } else {
+                subBtn.innerText = "🔔 Subscribe";
+                subBtn.classList.remove('subscribed');
+            }
+        }
+
+        // Fungsi Like
+        function handleLike() {
+            if (!isLoggedIn) return;
+            likes++;
+            document.getElementById('like-count').innerText = likes;
+        }
+
+        // Fungsi Share
+        function handleShare() {
+            if (!isLoggedIn) return;
+            shares++;
+            document.getElementById('share-count').innerText = shares;
+            alert(`Berhasil membagikan tautan! (Total dibagikan: ${shares})`);
+        }
+
+        // Fungsi Dislike
+        function handleDislike() {
+            if (!isLoggedIn) return;
+            dislikes++;
+            document.getElementById('dislike-count').innerText = dislikes;
+        }
+
+        // Fungsi Kirim Komentar
+        function handlePostComment() {
+            if (!isLoggedIn) return;
+            const commentText = document.getElementById('comment-input').value.trim();
+            
+            if (commentText === "") {
+                alert("Komentar tidak boleh kosong!");
+                return;
+            }
+
+            const commentList = document.getElementById('comment-list');
+            
+            // Buat elemen komentar baru
+            const commentItem = document.createElement('div');
+            commentItem.className = 'comment-item';
+            commentItem.innerHTML = `<span class="comment-user">${currentUser}:</span> ${escapeHtml(commentText)}`;
+            
+            // Masukkan ke bagian atas daftar komentar
+            commentList.prepend(commentItem);
+            
+            // Kosongkan textarea setelah dikirim
+            document.getElementById('comment-input').value = "";
+        }
+
+        // Fungsi pembantu untuk keamanan teks sederhana
+        function escapeHtml(text) {
+            return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+        }
+    </script>
+</body>
+</html>

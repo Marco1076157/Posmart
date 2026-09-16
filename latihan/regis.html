@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Autentikasi Sederhana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #auth-container {
+            background: #ffffff;
+            padding: 20px 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        h3 {
+            margin-top: 0;
+            color: #333;
+            text-align: center;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            margin: 8px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .switch-btn {
+            background-color: #6c757d;
+            margin-top: 5px;
+        }
+        .switch-btn:hover {
+            background-color: #5a6268;
+        }
+        #welcome-msg {
+            text-align: center;
+            color: #28a745;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Container Utama -->
+    <div id="auth-container">
+        <!-- Form Register -->
+        <div id="register-section">
+            <h3>Daftar Akun</h3>
+            <input type="text" id="reg-user" placeholder="Username">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <button onclick="handleRegister()">Daftar</button>
+            <button class="switch-btn" onclick="switchForm('login')">Sudah punya akun? Login</button>
+        </div>
+
+        <!-- Form Login -->
+        <div id="login-section" style="display: none;">
+            <h3>Login</h3>
+            <input type="text" id="login-user" placeholder="Username">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button onclick="handleLogin()">Masuk</button>
+            <button class="switch-btn" onclick="switchForm('register')">Belum punya akun? Daftar</button>
+        </div>
+    </div>
+
+    <!-- Pesan Sukses -->
+    <h2 id="welcome-msg" style="display: none;"></h2>
+
+    <script>
+        // Fungsi untuk berpindah antara form register dan login
+        function switchForm(target) {
+            const registerSection = document.getElementById('register-section');
+            const loginSection = document.getElementById('login-section');
+
+            if (target === 'login') {
+                registerSection.style.display = 'none';
+                loginSection.style.display = 'block';
+            } else {
+                registerSection.style.display = 'block';
+                loginSection.style.display = 'none';
+            }
+        }
+
+        // Fungsi Menangani Pendaftaran Akun
+        function handleRegister() {
+            const user = document.getElementById('reg-user').value.trim();
+            const pass = document.getElementById('reg-pass').value.trim();
+
+            if (!user || !pass) {
+                alert("Username dan password tidak boleh kosong!");
+                return;
+            }
+
+            // Periksa apakah username sudah terdaftar di localStorage
+            if (localStorage.getItem(user)) {
+                alert("Username sudah digunakan, silakan gunakan username lain.");
+                return;
+            }
+
+            // Simpan data akun ke localStorage dengan prinsip kejujuran data
+            localStorage.setItem(user, pass);
+            alert("Pendaftaran berhasil! Silakan login.");
+            
+            // Bersihkan input dan arahkan ke form login
+            document.getElementById('reg-user').value = '';
+            document.getElementById('reg-pass').value = '';
+            switchForm('login');
+        }
+
+        // Fungsi Menangani Proses Masuk (Login)
+        function handleLogin() {
+            const user = document.getElementById('login-user').value.trim();
+            const pass = document.getElementById('login-pass').value.trim();
+
+            if (!user || !pass) {
+                alert("Username dan password harus diisi!");
+                return;
+            }
+
+            // Ambil data password yang tersimpan
+            const savedPass = localStorage.getItem(user);
+
+            if (savedPass && savedPass === pass) {
+                // Sembunyikan form autentikasi dan tampilkan pesan selamat datang
+                document.getElementById('auth-container').style.display = 'none';
+                
+                const welcomeMsg = document.getElementById('welcome-msg');
+                welcomeMsg.innerText = `Selamat datang kembali, ${user}! 🎉`;
+                welcomeMsg.style.display = 'block';
+            } else {
+                alert("Username atau password salah!");
+            }
+        }
+    </script>
+</body>
+</html>

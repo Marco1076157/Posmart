@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi To-Do List</title>
+    <style>
+        /* Mengatur halaman utama agar konten berada tepat di tengah layar */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        /* Desain kotak mengambang di tengah */
+        .todo-card {
+            background-color: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 380px;
+            text-align: center;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        /* Pembungkus input dan button agar berjejer di sebelah */
+        .input-group {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box;
+        }
+
+        /* Tombol Tambah berwarna hijau */
+        .btn-add {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.2s;
+        }
+
+        .btn-add:hover {
+            background-color: #218838;
+        }
+
+        /* Wadah untuk menampilkan list tugas */
+        .todo-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            max-height: 250px;
+            overflow-y: auto; /* Memunculkan scroll jika list terlalu panjang */
+        }
+
+        /* Baris hasil input tugas */
+        .todo-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            border-left: 4px solid #28a745;
+            text-align: left;
+        }
+
+        /* Memotong teks atau memindahkan ke bawah jika teks terlalu panjang */
+        .todo-text {
+            font-size: 14px;
+            color: #444;
+            word-break: break-all;
+            margin-right: 10px;
+        }
+
+        /* Tombol Hapus berwarna merah di samping kanan hasil */
+        .btn-delete {
+            background-color: #dc3545;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .btn-delete:hover {
+            background-color: #c82333;
+        }
+
+        .subJudul{
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Kotak mengambang di tengah -->
+    <div class="todo-card">
+        <h2>Aplikasi Todo List</h2><br>
+        <p class="subJudul">Mari kelola aktivitas harian dengan teratur, penuh berkah, dan niat kaerna Allah SWT</p>
+        
+        <!-- Bagian Input dan Tombol Tambah -->
+        <div class="input-group">
+            <input type="text" id="todo-input" placeholder="tambahkan tugas baru...">
+            <button class="btn-add" onclick="tambahTugas()">Tambah</button>
+        </div>
+
+        <!-- Tempat menampilkan hasil di bawahnya -->
+        <ul id="todo-list" class="todo-list">
+            <!-- Tugas baru akan masuk di sini secara otomatis melalui JS -->
+        </ul>
+    </div>
+
+    <script>
+        function tambahTugas() {
+            const inputNode = document.getElementById("todo-input");
+            const listContainer = document.getElementById("todo-list");
+            const tugasTeks = inputNode.value.trim(); // .trim() untuk menghapus spasi kosong di awal/akhir
+
+            // Validasi jika input kosong
+            if (tugasTeks === "") {
+                alert("input tidak boleh kosong");
+                return;
+            }
+
+            // Membuat elemen li baru untuk menampung hasil
+            const li = document.createElement("li");
+            li.className = "todo-item";
+
+            // Membuat element span untuk teks tugasnya
+            const spanTeks = document.createElement("span");
+            spanTeks.className = "todo-text";
+            spanTeks.innerText = tugasTeks;
+
+            // Membuat tombol hapus berwarna merah
+            const tombolHapus = document.createElement("button");
+            tombolHapus.className = "btn-delete";
+            tombolHapus.innerText = "Hapus";
+            
+            // Logika untuk menghapus item ini ketika tombol hapus diklik
+            tombolHapus.onclick = function() {
+                listContainer.removeChild(li);
+            };
+
+            // Gabungkan teks dan tombol hapus ke dalam elemen li
+            li.appendChild(spanTeks);
+            li.appendChild(tombolHapus);
+
+            // Masukkan elemen li utuh ke dalam daftar ul
+            listContainer.appendChild(li);
+
+            // Kosongkan kembali kotak input setelah berhasil menambah tugas
+            inputNode.value = "";
+        }
+
+        // Fitur tambahan: Bisa tambah tugas dengan menekan tombol 'Enter' pada keyboard
+        document.getElementById("todo-input").addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                tambahTugas();
+            }
+        });
+    </script>
+
+</body>
+</html>

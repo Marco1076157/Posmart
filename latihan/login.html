@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Formulir Autentikasi Sederhana</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 14px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 8px;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        #login-section, #welcome-msg {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <!-- Container Utama Autentikasi -->
+        <div id="auth-container">
+            <!-- Bagian Register -->
+            <div id="register-section">
+                <h3>Daftar Akun Baru</h3>
+                <div class="form-group">
+                    <label for="reg-user">Username</label>
+                    <input type="text" id="reg-user" placeholder="Masukkan username">
+                </div>
+                <div class="form-group">
+                    <label for="reg-pass">Password</label>
+                    <input type="password" id="reg-pass" placeholder="Masukkan password">
+                </div>
+                <button onclick="handleRegister()">Daftar</button>
+            </div>
+
+            <!-- Bagian Login -->
+            <div id="login-section">
+                <h3>Masuk ke Akun</h3>
+                <div class="form-group">
+                    <label for="login-user">Username</label>
+                    <input type="text" id="login-user" placeholder="Username Anda">
+                </div>
+                <div class="form-group">
+                    <label for="login-pass">Password</label>
+                    <input type="password" id="login-pass" placeholder="Password Anda">
+                </div>
+                <button onclick="handleLogin()">Masuk</button>
+            </div>
+        </div>
+
+        <!-- Pesan Selamat Datang -->
+        <div id="welcome-msg" style="text-align: center; font-weight: bold; color: #333;"></div>
+    </div>
+
+    <script>
+        // Data sementara (in-memory)
+        let database = {
+            username: "",
+            password: ""
+        };
+
+        const handleRegister = () => {
+            const user = document.getElementById('reg-user').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            if (!user || !pass) {
+                alert("Mohon isi dengan jujur dan lengkap.");
+                return;
+            }
+
+            database.username = user;
+            database.password = pass;
+
+            // Manipulasi DOM: Sembunyikan register, tampilkan login
+            document.getElementById('register-section').style.display = 'none';
+            document.getElementById('login-section').style.display = 'block';
+            alert("Akun berhasil dibuat. Silakan login.");
+        };
+
+        const handleLogin = () => {
+            const user = document.getElementById('login-user').value;
+            const pass = document.getElementById('login-pass').value;
+
+            // Tabayyun: Cek validitas
+            if (user === database.username && pass === database.password) {
+                document.getElementById('auth-container').style.display = 'none';
+                const msg = document.getElementById('welcome-msg');
+                msg.innerText = `Selamat datang, ${user}! Semoga hari Anda penuh berkah.`;
+                msg.style.display = 'block';
+            } else {
+                alert("Username atau password salah. Mari diperiksa kembali.");
+            }
+        };
+    </script>
+</body>
+</html>
