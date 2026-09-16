@@ -168,23 +168,12 @@ POSMart/
 └── README.md
 ```
 
-## Keamanan konfigurasi
+## Screenshot
 
-File `backend/config/env.php` sengaja tidak diunggah ke Git karena memuat password database, JWT secret, dan Google OAuth client secret. Gunakan `env.example.php` sebagai template saja.
+![Halaman Dashboard](docs/images/dashboard.png)
 
-Jika secret Google OAuth atau password database pernah sempat terunggah ke repository publik, segera ganti (rotate) credential tersebut dari Google Cloud Console/MySQL sebelum melanjutkan deployment.
+![Halaman Katalog](docs/images/katalog.png)
 
-## Upload ke GitHub
+![Dashboard Login](docs/images/login.png)
 
-Setelah membuat repository kosong di GitHub, jalankan dari root proyek:
-
-```bash
-git init
-git add .
-git commit -m "Initial commit: POSMart"
-git branch -M main
-git remote add origin https://github.com/USERNAME/posmart.git
-git push -u origin main
-```
-
-Sebelum `git add .`, pastikan `backend/config/env.php` tidak ikut tercatat dengan menjalankan `git status`. File tersebut sudah ada di `.gitignore`.
+![Dashboard Admin](docs/images/admin.png)
